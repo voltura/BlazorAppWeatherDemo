@@ -1,4 +1,4 @@
-using BlazorApp1.Data;
+using BlazorAppWeatherDemo.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 

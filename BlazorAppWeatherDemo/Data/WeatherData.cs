@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BlazorApp1.Data
+namespace BlazorAppWeatherDemo.Data
 {
     public record Geometry(
         [property: JsonPropertyName("type")] string Type,
