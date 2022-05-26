@@ -1,0 +1,49 @@
+﻿@page "/call-dotnet-example-one-helper"
+@implements IDisposable
+@inject IJSRuntime JS
+@using BlazorApp1.Data
+@inject WeatherDataService WeatherService
+
+<PageTitle>Weather from current geolocation</PageTitle>
+
+<h1>Call .NET from Javascript and vice versa...</h1>
+
+<!--<div id="weatherInfo" @ref="weatherInfo">Loading...</div>-->
+<div id="weatherInfo">Loading...</div>
+
+@code {
+    private Data.WeatherData? weatherData;
+    //private Data.Parameter? parameter;
+    private double? celcius;
+    //private ElementReference weatherInfo;
+    //private string? name;
+    //private string? coord;
+    private DotNetObjectReference<CallDotNetExampleOneHelper>? dotNetHelper;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            dotNetHelper = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("GreetingHelpers.setDotNetHelper", dotNetHelper);
+        }
+    }
+
+    [JSInvokable]
+    public async Task<string> GetCoordinates(double lat, double lng)
+    {
+        var longDbl = Math.Round(lng, 6);
+        var latDbl = Math.Round(lat, 6);
+        weatherData = await WeatherService.GetWeatherDataAsync(longDbl, latDbl);
+        //parameter = weatherData?.TimeSeries.First().Parameters.Where(x => x.Unit == "Cel").First();
+        celcius = weatherData?.TimeSeries.First().Parameters.Where(x => x.Unit == "Cel").Select(x => x.Values).First().ToArray()[0];
+        //name = $"It's {celcius}˚C.";
+        //await JS.InvokeVoidAsync("setElementText1", weatherInfo, $"{name}");
+        return $"It's {(celcius is null ? "unknown temperature" : Math.Round((decimal)celcius)+"˚C")} at your location right now.";
+    }
+
+    public void Dispose()
+    {
+        dotNetHelper?.Dispose();
+    }
+}
