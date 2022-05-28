@@ -6,9 +6,8 @@
 
 <PageTitle>Weather from current geolocation</PageTitle>
 
-<h1>Call .NET from Javascript and vice versa...</h1>
+<h1>Weather at your location</h1>
 
-<!--<div id="weatherInfo" @ref="weatherInfo">Loading...</div>-->
 <div id="weatherInfo">Loading...</div>
 
 @code {
@@ -18,19 +17,19 @@
     //private ElementReference weatherInfo;
     //private string? name;
     //private string? coord;
-    private DotNetObjectReference<WeatherAtYou>? dotNetHelper;
+    private DotNetObjectReference<WeatherAtYou>? dotNetObjectRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            dotNetHelper = DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("GreetingHelpers.setDotNetHelper", dotNetHelper);
+            dotNetObjectRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("WeatherHelper.getCurrentCoordinates", dotNetObjectRef);
         }
     }
 
     [JSInvokable]
-    public async Task<string> GetCoordinates(double lat, double lng)
+    public async Task<string> GetWeatherData(double lat, double lng)
     {
         var longDbl = Math.Round(lng, 6);
         var latDbl = Math.Round(lat, 6);
@@ -44,6 +43,6 @@
 
     public void Dispose()
     {
-        dotNetHelper?.Dispose();
+        dotNetObjectRef?.Dispose();
     }
 }

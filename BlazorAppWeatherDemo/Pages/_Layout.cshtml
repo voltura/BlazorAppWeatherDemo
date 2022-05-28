@@ -26,45 +26,7 @@
             <a href="" class="reload">Reload</a>
             <a class="dismiss">🗙</a>
         </div>
-        <input type="hidden" id="txtPos1"/>
-        <input type="hidden" id="coordi"/>
         <script src="_framework/blazor.server.js"></script>
-
-
-        <script>
-            var options = {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
-
-            async function success(pos) {
-                var crd = pos.coords;
-                console.log('Your current position is:');
-                console.log(`Latitude : ${crd.latitude}`);
-                console.log(`Longitude: ${crd.longitude}`);
-                console.log(`More or less ${crd.accuracy} meters.`);
-                const msg = await GreetingHelpers.dotNetHelper.invokeMethodAsync('GetCoordinates', crd.latitude, crd.longitude);
-                document.getElementById(`weatherInfo`).innerText = msg;
-            }
-
-            function error(err) {
-              console.warn(`ERROR(${err.code}): ${err.message}`);
-            }
-
-            /*window.setElementText1 = (element, text) => element.innerText = text;*/
-
-            class GreetingHelpers {
-                static dotNetHelper;
-
-                static setDotNetHelper(value) {
-                    GreetingHelpers.dotNetHelper = value;
-                    navigator.geolocation.getCurrentPosition(success, error, options);
-                }
-            }
-
-            window.GreetingHelpers = GreetingHelpers;
-
-        </script>
+        <script src="scripts/WeatherHelper.js"></script>
     </body>
 </html>
